@@ -1,4 +1,7 @@
 import sys
+import time
+
+
 
 if len(sys.argv) < 2:
     exit("Missing model file")
@@ -15,3 +18,9 @@ while not done:
     best_state = agent.best_state(next_states.keys())
     best_action = next_states[best_state]
     reward, done = env.play(best_action[0], best_action[1], render=True)
+
+        # 성능 분석용
+    start = time.time()
+    best_state = agent.best_state(list(next_states.keys()))
+    print("agent.best_state time:", time.time() - start)
+
