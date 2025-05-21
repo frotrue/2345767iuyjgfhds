@@ -113,20 +113,15 @@ class DQNAgent:
 
     def best_state(self, states):
         '''Returns the best state for a given collection of states'''
-        max_value = None
-        best_state = None
+        states = list(states)
 
         if random.random() <= self.epsilon:
-            return random.choice(list(states))
+            return random.choice(states)
 
-        else:
-            for state in states:
-                value = self.predict_value(np.reshape(state, [1, self.state_size]))
-                if not max_value or value > max_value:
-                    max_value = value
-                    best_state = state
-
-        return best_state
+        states_array = np.array([np.reshape(state, (self.state_size,)) for state in states])
+        values = self.model.predict(states_array, verbose=0).flatten()
+        best_idx = np.argmax(values)
+        return states[best_idx]
 
 
     def train(self, batch_size=32, epochs=3):
