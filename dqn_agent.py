@@ -4,6 +4,7 @@ from collections import deque
 import numpy as np
 import random
 
+
 # Deep Q Learning Agent + Maximin
 #
 # This version only provides one value per input,
@@ -13,6 +14,7 @@ import random
 # in contrast to the traditional way of finding the best
 # action for a particular state.
 class DQNAgent:
+    
 
     '''Deep Q Learning Agent + Maximin
 
@@ -35,6 +37,14 @@ class DQNAgent:
                  epsilon=1, epsilon_min=0, epsilon_stop_episode=0,
                  n_neurons=[32, 32], activations=['relu', 'relu', 'linear'],
                  loss='mse', optimizer='adam', replay_start_size=None, modelFile=None):
+        
+        if modelFile is not None:
+            import onnxruntime as ort
+            self.onnx_session = ort.InferenceSession(modelFile)
+            self.onnx_input_name = self.onnx_session.get_inputs()[0].name
+        else:
+            self.onnx_session = None
+            self.onnx_input_name = None
 
         if len(activations) != len(n_neurons) + 1:
             raise ValueError("n_neurons and activations do not match, "
@@ -65,11 +75,11 @@ class DQNAgent:
         self.replay_start_size = replay_start_size
 
         # load an existing model
-        if modelFile is not None:
-            self.model = load_model(modelFile)
-        # create a new model
-        else:
-            self.model = self._build_model()
+        # if modelFile is not None:
+        #     self.model = load_model(modelFile)
+        # # create a new model
+        # else:
+        #     self.model = self._build_model()
 
 
     def _build_model(self):
@@ -110,17 +120,19 @@ class DQNAgent:
         else:
             return self.predict_value(state)
 
-
+    
     def best_state(self, states):
         '''Returns the best state for a given collection of states'''
-        states = list(states)
-
         if random.random() <= self.epsilon:
-            return random.choice(states)
+          return random.choice(list(states))
 
-        states_array = np.array([np.reshape(state, (self.state_size,)) for state in states])
-        values = self.model.predict(states_array, verbose=0).flatten()
-        best_idx = np.argmax(values)
+        states = list(states)
+        states_array = np.stack([np.reshape(state, (self.state_size,)) for state in states]).astype(np.float32)
+
+        # ONNX 추론
+        outputs = self.onnx_session.run(None, {self.onnx_input_name: states_array})[0]
+        best_idx = np.argmax(outputs.flatten())
+
         return states[best_idx]
 
 
