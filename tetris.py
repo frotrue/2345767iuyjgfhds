@@ -277,13 +277,18 @@ class Tetris:
         self.current_pos = [x, 0]
         self.current_rotation = rotation
 
-        # Drop piece
+        step_count = 0  # 내려간 칸 수 카운트
+
         while not self._check_collision(self._get_rotated_piece(), self.current_pos):
             if render:
-                self.render()
-                if render_delay:
-                    sleep(render_delay)
+                # 3칸마다 한 번씩 렌더링 (원하는 간격으로 조절 가능)
+                if step_count % 3 == 0:
+                    self.render()
+                    if render_delay:
+                        sleep(render_delay)
             self.current_pos[1] += 1
+            step_count += 1
+
         self.current_pos[1] -= 1
 
         # Update board and calculate score        
