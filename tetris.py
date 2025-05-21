@@ -306,8 +306,10 @@ class Tetris:
         img = np.array(img).reshape(Tetris.BOARD_HEIGHT, Tetris.BOARD_WIDTH, 3).astype(np.uint8)
         img = img[..., ::-1] # Convert RRG to BGR (used by cv2)
         img = Image.fromarray(img, 'RGB')
-        img = img.resize((Tetris.BOARD_WIDTH * 25, Tetris.BOARD_HEIGHT * 25), Image.NEAREST)
+        SCALE = 50  # 원하는 크기로 조정
+
+        img = img.resize((Tetris.BOARD_WIDTH * SCALE, Tetris.BOARD_HEIGHT * SCALE), Image.NEAREST)
         img = np.array(img)
-        cv2.putText(img, str(self.score), (22, 22), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
+        cv2.putText(img, str(self.score), (SCALE // 2, SCALE // 2), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
         cv2.imshow('image', np.array(img))
         cv2.waitKey(1)
