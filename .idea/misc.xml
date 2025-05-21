@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Black">
+    <option name="sdkName" value="Python 3.12.3 WSL (Ubuntu): (/home/user/myenv/bin/python)" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.10.12 Docker (sha256:a14bea0996977224fbbd49115d00a345e73dd08a2208e20f4ccb995ea40046e7)" project-jdk-type="Python SDK" />
+</project>
