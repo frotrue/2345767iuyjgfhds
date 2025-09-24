@@ -8,6 +8,7 @@ A bot that plays [Tetris](https://en.wikipedia.org/wiki/Tetris) using deep reinf
 ## Requirements
 
 installed conda
+
 installed git
 
 ## how to run?
